@@ -73,7 +73,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	var user models.User
 
 	if err := h.DB.First(&user, id).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found",})
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found",})
 	}
 
 	var input models.User
@@ -94,3 +94,48 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+func (h *UserHandler) PatchUser(c *gin.Context) {
+	id := c.Param("id")
+
+	var user models.User
+
+	if err := h.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found",})
+		return
+	}
+
+	var input map[string]interface{}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON",})
+		return
+	}
+
+	delete(input, "id")
+	delete(input, "created_at")
+
+	if err := h.DB.Model(&user).Updates(input).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update user",})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+func (h *UserHandler) DeleteUser(c *gin.Context) {
+	id := c.Param("id")
+
+	var user models.User
+
+	if err := h.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found",})
+		return
+	}
+
+	if err := h.DB.Delete(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete user",})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User deleted succesfully",})
+}

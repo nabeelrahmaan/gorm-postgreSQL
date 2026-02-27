@@ -33,6 +33,9 @@ func main() {
 	r.POST("/users", userHandler.CreateUser)
 	r.GET("/users", userHandler.GetUsers)
 	r.GET("/users/:id", userHandler.GetUserById)
+	r.PUT("/users/:id", userHandler.UpdateUser)
+	r.PATCH("/users/:id", userHandler.PatchUser)
+	r.DELETE("/users/:id", userHandler.DeleteUser)
 
 	r.Run(":" + cfg.Port)
 }
