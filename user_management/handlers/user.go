@@ -17,6 +17,7 @@ func NewUserHandler(db *gorm.DB) *UserHandler {
 	return &UserHandler{DB: db}
 }
 
+
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var user models.User
 
@@ -39,6 +40,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+
 func (h *UserHandler) GetUsers(c *gin.Context) {
 	var users []models.User
 
@@ -51,6 +53,7 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, users)
 }
+
 
 func (h *UserHandler) GetUserById(c *gin.Context) {
 	id := c.Param("id")
@@ -66,6 +69,7 @@ func (h *UserHandler) GetUserById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, user)
 }
+
 
 func (h *UserHandler) UpdateUser(c *gin.Context) {
 	id := c.Param("id")
@@ -94,6 +98,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+
 func (h *UserHandler) PatchUser(c *gin.Context) {
 	id := c.Param("id")
 
@@ -121,6 +126,7 @@ func (h *UserHandler) PatchUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, user)
 }
+
 
 func (h *UserHandler) DeleteUser(c *gin.Context) {
 	id := c.Param("id")

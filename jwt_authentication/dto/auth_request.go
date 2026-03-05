@@ -1,0 +1,16 @@
+package dto
+
+type SignupRequest struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"mail"`
+	Password string `json:"password"`
+}
+
+type RefreshRequest struct {
+	RefreshToken string `json:"refresh_token"`
+}
