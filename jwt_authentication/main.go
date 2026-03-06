@@ -2,6 +2,10 @@ package main
 
 import (
 	"authentication/config"
+	"authentication/handlers"
+	"authentication/repository"
+	"authentication/routes"
+	"authentication/service"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -16,9 +20,17 @@ func main() {
 	}
 
 	cfg := config.LoadConfig()
-	config.ConnectToDb(cfg)
+	db := config.ConnectToDb(cfg)
 
-	router := gin.Default()
+	repository := &repository.UserRepository{DB: db,}
 
-	router.Run(":" + cfg.Port)
+	service := &service.AuthService{Repo: repository,}
+
+	handler := &handlers.AuthHandler{Service: service,}
+
+
+	r := gin.Default()
+	routes.RegisterRoutes(r, handler)
+
+	r.Run(":" + cfg.Port)
 }

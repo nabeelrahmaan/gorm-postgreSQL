@@ -20,9 +20,9 @@ func (r *UserRepository) CreateRefresh(refresh *models.RefreshToken) error{
 
 func (r *UserRepository) FindByEmail (email string) (*models.User, error) {
 
-	var user *models.User
+	var user models.User
 
 	err := r.DB.Where("email = ?", email).First(&user).Error
 
-	return user, err
+	return &user, err
 }

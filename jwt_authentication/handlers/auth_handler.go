@@ -9,7 +9,7 @@ import (
 )
 
 type AuthHandler struct {
-	service *service.AuthService
+	Service *service.AuthService
 }
 
 func (h *AuthHandler) Signup(c *gin.Context) {
@@ -20,7 +20,7 @@ func (h *AuthHandler) Signup(c *gin.Context) {
 		return
 	}
 
-	err := h.service.Signup(req.Name, req.Email, req.Password)
+	err := h.Service.Signup(req.Name, req.Email, req.Password)
 
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
@@ -38,7 +38,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	access, refresh, err := h.service.Login(req.Email, req.Password)
+	access, refresh, err := h.Service.Login(req.Email, req.Password)
 	if err != nil {
 		c.JSON(401, gin.H{"error": err.Error()})
 		return

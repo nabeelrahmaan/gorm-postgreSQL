@@ -5,11 +5,12 @@ import (
 	"authentication/repository"
 	"authentication/utils"
 	"errors"
+	"fmt"
 	"time"
 )
 
 type AuthService struct {
-	repo *repository.UserRepository
+	Repo *repository.UserRepository
 }
 
 func (s *AuthService) Signup(name, email, password string) error {
@@ -23,14 +24,15 @@ func (s *AuthService) Signup(name, email, password string) error {
 		Name:     name,
 		Email:    email,
 		Password: hash,
+		Role: "user",
 	}
 
-	return s.repo.Create(&user)
+	return s.Repo.Create(&user)
 }
 
 func (s *AuthService) Login(email, password string) (string, string, error) {
 
-	user, err := s.repo.FindByEmail(email)
+	user, err := s.Repo.FindByEmail(email)
 	if err != nil {
 		return "", "", errors.New("invalid credentials")
 	}
@@ -39,12 +41,13 @@ func (s *AuthService) Login(email, password string) (string, string, error) {
 		return "", "", errors.New("invalid credentials")
 	}
 
-	access, err := utils.GenerateAccessToken(user.ID)
+	access, err := utils.GenerateAccessToken(user)
+	fmt.Println("ACCESS ERROR:", err)
 	if err != nil {
 		return "", "", errors.New("failed to create access token")
 	}
 
-	refresh, err := utils.GenerateRefreshToken(user.ID)
+	refresh, err := utils.GenerateRefreshToken(user)
 	if err != nil {
 		return "", "", errors.New("failed to create refresh token")
 	}
@@ -56,7 +59,7 @@ func (s *AuthService) Login(email, password string) (string, string, error) {
 		ExpiresAt: time.Now().Add(7 * 24 * time.Hour),
 	}
 
-	err = s.repo.CreateRefresh(&ref)
+	err = s.Repo.CreateRefresh(&ref)
 	if err != nil {
 		return "", "", errors.New("failed to store refresh token")
 	}
